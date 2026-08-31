@@ -1,0 +1,12 @@
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.log
+
+# Defense-in-depth (backend/ and frontend/ already have their own .gitignore
+# for venv, node_modules, __pycache__, app.db, uploads/, dist/, etc. — these
+# just make sure nothing of that kind slips in if it ever ends up elsewhere)
+__pycache__/
+*.pyc
+.pytest_cache/
+node_modules/

@@ -1,0 +1,929 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>گزارش فنی سامانه دانشجویی</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #EDF2F4;
+    --bg-grid: #C9D6DC;
+    --surface: #FFFFFF;
+    --surface-alt: #F4F8F9;
+    --border: #CBD8DD;
+    --border-strong: #9FB4BC;
+    --ink: #12232E;
+    --ink-muted: #4C6472;
+    --ink-faint: #7C8F98;
+    --accent: #0B5FA6;
+    --accent-strong: #08427A;
+    --accent-soft: #E1EBF3;
+    --amber: #A6510C;
+    --amber-soft: #F4E3D2;
+    --teal: #0E7C6B;
+    --teal-soft: #DCEFEA;
+    --shadow: rgba(18, 35, 46, 0.10);
+    --font-display: "Vazirmatn", "Segoe UI", Tahoma, sans-serif;
+    --font-mono: "JetBrains Mono", "Vazirmatn", ui-monospace, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0A2743;
+      --bg-grid: #164575;
+      --surface: #0F3760;
+      --surface-alt: #123F6B;
+      --border: #1E5581;
+      --border-strong: #2E6FA0;
+      --ink: #E8F3FA;
+      --ink-muted: #A9C7DC;
+      --ink-faint: #7FA6C4;
+      --accent: #7FD1FF;
+      --accent-strong: #BFE8FF;
+      --accent-soft: #123F6B;
+      --amber: #F2A65A;
+      --amber-soft: #2A3F52;
+      --teal: #6BE0C6;
+      --teal-soft: #123F52;
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0A2743;
+    --bg-grid: #164575;
+    --surface: #0F3760;
+    --surface-alt: #123F6B;
+    --border: #1E5581;
+    --border-strong: #2E6FA0;
+    --ink: #E8F3FA;
+    --ink-muted: #A9C7DC;
+    --ink-faint: #7FA6C4;
+    --accent: #7FD1FF;
+    --accent-strong: #BFE8FF;
+    --accent-soft: #123F6B;
+    --amber: #F2A65A;
+    --amber-soft: #2A3F52;
+    --teal: #6BE0C6;
+    --teal-soft: #123F52;
+    --shadow: rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-attachment: local;
+    color: var(--ink);
+    font-family: var(--font-display);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 40px 20px 100px;
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 24px 14px 80px; }
+  }
+
+  /* ---------- Title block ---------- */
+
+  .titleblock {
+    background: var(--surface);
+    border: 1.5px solid var(--border-strong);
+    border-radius: 4px;
+    box-shadow: 0 2px 14px var(--shadow);
+    overflow: hidden;
+    margin-bottom: 36px;
+  }
+
+  .titleblock-main {
+    padding: 30px 32px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .titleblock-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+
+  .titleblock-main h1 {
+    margin: 0 0 8px;
+    font-size: clamp(26px, 4.4vw, 36px);
+    font-weight: 800;
+    line-height: 1.25;
+    text-wrap: balance;
+    color: var(--ink);
+  }
+
+  .titleblock-main p {
+    margin: 0;
+    color: var(--ink-muted);
+    font-size: 15px;
+    max-width: 62ch;
+    line-height: 1.75;
+  }
+
+  .titleblock-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 560px) {
+    .titleblock-meta { grid-template-columns: 1fr; }
+  }
+
+  .titleblock-meta div {
+    padding: 14px 32px;
+    border-inline-end: 1px solid var(--border);
+  }
+
+  .titleblock-meta div:last-child { border-inline-end: none; }
+
+  .titleblock-meta .k {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+
+  .titleblock-meta .v {
+    font-size: 13.5px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* ---------- TOC ---------- */
+
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 48px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .toc a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--ink-muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .toc a:hover,
+  .toc a:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+    outline: none;
+  }
+
+  .toc .num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  /* ---------- Sections ---------- */
+
+  section.doc-section {
+    margin-bottom: 56px;
+    scroll-margin-top: 20px;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 22px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--border-strong);
+  }
+
+  .section-head .num {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .section-head h2 {
+    margin: 0;
+    font-size: clamp(20px, 3vw, 25px);
+    font-weight: 800;
+    text-wrap: balance;
+  }
+
+  .lede {
+    color: var(--ink-muted);
+    font-size: 15.5px;
+    line-height: 1.9;
+    max-width: 68ch;
+    margin: 0 0 26px;
+  }
+
+  p.body-copy {
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--ink);
+    max-width: 68ch;
+  }
+
+  /* ---------- Architecture diagram ---------- */
+
+  figure.diagram {
+    margin: 0 0 8px;
+    padding: 22px 18px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  figure.diagram svg { width: 100%; height: auto; display: block; }
+
+  figure.diagram figcaption {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.7;
+  }
+
+  .diagram text { font-family: var(--font-mono); }
+
+  /* ---------- Stack tags ---------- */
+
+  .stackgrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 680px) {
+    .stackgrid { grid-template-columns: 1fr; }
+  }
+
+  .stackcol h4 {
+    margin: 0 0 10px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--ink-faint);
+    font-weight: 600;
+  }
+
+  .tagrow { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 5px 9px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---------- Role cards ---------- */
+
+  .rolegrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 760px) {
+    .rolegrid { grid-template-columns: 1fr; }
+  }
+
+  .rolecard {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 18px 18px 20px;
+  }
+
+  .rolecard h3 {
+    margin: 0 0 12px;
+    font-size: 16.5px;
+    font-weight: 700;
+  }
+
+  .rolecard ul {
+    margin: 0;
+    padding-inline-start: 18px;
+    font-size: 13.6px;
+    line-height: 1.85;
+    color: var(--ink-muted);
+  }
+
+  .rolecard li::marker { color: var(--accent); }
+
+  /* ---------- Challenge / solution cards ---------- */
+
+  .chall {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .chall-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chall-head h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .chall-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+
+  .chall-body { padding: 4px 18px 16px; }
+
+  .cs-row {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+  }
+
+  .cs-row + .cs-row { border-top: 1px dashed var(--border); }
+
+  .cs-mark {
+    flex-shrink: 0;
+    width: 74px;
+    padding-top: 1px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .cs-row.problem .cs-mark { color: var(--amber); }
+  .cs-row.fix .cs-mark { color: var(--teal); }
+
+  .cs-text {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--ink);
+  }
+
+  .cs-text code {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    background: var(--surface-alt);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--accent-strong);
+  }
+
+  /* ---------- Feature groups ---------- */
+
+  .featuregroup {
+    margin-bottom: 20px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  .featuregroup h3 {
+    margin: 0 0 4px;
+    font-size: 15px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .featuregroup h3 .fnum {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--teal);
+  }
+
+  .featuregroup ul {
+    margin: 10px 0 0;
+    padding-inline-start: 18px;
+    font-size: 13.8px;
+    line-height: 1.9;
+    color: var(--ink-muted);
+    columns: 2;
+    column-gap: 28px;
+  }
+
+  @media (max-width: 640px) {
+    .featuregroup ul { columns: 1; }
+  }
+
+  .featuregroup li { break-inside: avoid; }
+  .featuregroup li::marker { color: var(--teal); }
+
+  /* ---------- Opportunity cards ---------- */
+
+  .oppgrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  @media (max-width: 680px) {
+    .oppgrid { grid-template-columns: 1fr; }
+  }
+
+  .opp {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-inline-start: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 14px 16px;
+  }
+
+  .opp h4 {
+    margin: 0 0 6px;
+    font-size: 14.5px;
+    font-weight: 700;
+  }
+
+  .opp p {
+    margin: 0;
+    font-size: 13.3px;
+    line-height: 1.75;
+    color: var(--ink-muted);
+  }
+
+  .opp.wide { grid-column: 1 / -1; }
+
+  /* ---------- Stats ---------- */
+
+  .statrow {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 760px) {
+    .statrow { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 440px) {
+    .statrow { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 10px;
+    text-align: center;
+  }
+
+  .stat .n {
+    display: block;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.2;
+  }
+
+  .stat .l {
+    display: block;
+    margin-top: 6px;
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+
+  /* ---------- Closing ---------- */
+
+  .closing {
+    margin-top: 60px;
+    padding-top: 22px;
+    border-top: 1.5px dashed var(--border-strong);
+    font-size: 13px;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+  }
+
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="page" dir="rtl" lang="fa">
+
+  <div class="titleblock">
+    <div class="titleblock-main">
+      <p class="titleblock-eyebrow">مستند ارائه — نسخه‌ی نهایی توسعه‌ی محلی</p>
+      <h1>سامانه مدیریت پروژه‌های دانشجویی</h1>
+      <p>معماری، چالش‌های فنی و راه‌حل‌ها، توسعه‌های تکمیلی، و نقشه‌ی راه آینده — تهیه‌شده برای ارائه به استاد راهنما.</p>
+    </div>
+    <div class="titleblock-meta">
+      <div><span class="k">پشته فناوری</span><span class="v">FastAPI · React · SQLite</span></div>
+      <div><span class="k">وضعیت</span><span class="v">توسعه‌ی محلی، پایدار</span></div>
+      <div><span class="k">پوشش تست</span><span class="v">۱۴۲ تست خودکار</span></div>
+    </div>
+  </div>
+
+  <ul class="toc">
+    <li><a href="#overview"><span class="num">۰۱</span> نمای کلی</a></li>
+    <li><a href="#architecture"><span class="num">۰۲</span> معماری</a></li>
+    <li><a href="#roles"><span class="num">۰۳</span> نقش‌ها</a></li>
+    <li><a href="#challenges"><span class="num">۰۴</span> چالش‌ها و راه‌حل‌ها</a></li>
+    <li><a href="#features"><span class="num">۰۵</span> توسعه‌های تکمیلی</a></li>
+    <li><a href="#future"><span class="num">۰۶</span> فرصت‌های آینده</a></li>
+    <li><a href="#stats"><span class="num">۰۷</span> جمع‌بندی آماری</a></li>
+  </ul>
+
+  <!-- 01 overview -->
+  <section class="doc-section" id="overview">
+    <div class="section-head"><span class="num">۰۱</span><h2>نمای کلی پروژه</h2></div>
+    <p class="lede">
+      این سامانه گردش کار پایان‌نامه‌ی کارشناسی را از ابتدا تا دفاع پوشش می‌دهد: استاد موضوع تعریف می‌کند،
+      دانشجو موضوع را انتخاب می‌کند یا برایش درخواست می‌دهد، و از آن پس هر دو طرف — گزارش هفتگی، جلسات،
+      فایل‌ها، پیام‌رسانی، نمره‌دهی و در نهایت جلسه‌ی دفاع — را از یک سامانه‌ی واحد پیش می‌برند، به‌جای
+      پراکنده‌بودن روی ایمیل، پیام‌رسان و کاغذ.
+    </p>
+    <p class="body-copy">
+      پروژه با سه نقش کاربری طراحی شده: <strong>استاد راهنما</strong> (تعریف پروژه، تصمیم‌گیری، نمره‌دهی)،
+      <strong>دانشجو</strong> (انتخاب پروژه، گزارش‌دهی، مشارکت در تعیین جلسه)، و <strong>مدیر گروه</strong>
+      به‌عنوان نقش نظارتی سراسری که بعداً به سامانه اضافه شد.
+    </p>
+  </section>
+
+  <!-- 02 architecture -->
+  <section class="doc-section" id="architecture">
+    <div class="section-head"><span class="num">۰۲</span><h2>معماری و پشته فناوری</h2></div>
+    <p class="lede">
+      یک بک‌اند FastAPI با پایگاه‌داده‌ی SQLite در پشت یک فرانت‌اند React تک‌صفحه‌ای؛ نکته‌ی معماری‌ای که
+      ارزش دیدن دارد این است که یک مسیر کاملاً مستقل و ناهم‌زمان — تسک یادآوری پس‌زمینه — به‌موازات چرخه‌ی
+      معمول درخواست/پاسخ به همان پایگاه‌داده سر می‌زند.
+    </p>
+
+    <figure class="diagram">
+      <svg viewBox="0 0 720 300" role="img" aria-label="نمودار معماری: مرورگر از طریق HTTP و JWT با FastAPI صحبت می‌کند، FastAPI با SQLAlchemy به SQLite می‌نویسد و از پوشه‌ی uploads فایل می‌خواند و می‌نویسد؛ هم‌زمان یک تسک پس‌زمینه‌ی مستقل هر پانزده دقیقه پایگاه‌داده را برای رویدادهای نزدیک بررسی و اعلان ثبت می‌کند.">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"></path>
+          </marker>
+        </defs>
+
+        <!-- Browser (right — where an RTL reader starts) -->
+        <rect x="546" y="34" width="150" height="62" rx="4" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+        <text x="621" y="60" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">مرورگر</text>
+        <text x="621" y="78" text-anchor="middle" font-size="11" fill="currentColor" opacity="0.7">React SPA</text>
+
+        <!-- FastAPI -->
+        <rect x="290" y="34" width="160" height="62" rx="4" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+        <text x="370" y="60" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">FastAPI</text>
+        <text x="370" y="78" text-anchor="middle" font-size="11" fill="currentColor" opacity="0.7">۱۳ روتر · JWT</text>
+
+        <!-- DB (emphasized) -->
+        <rect x="24" y="102" width="150" height="72" rx="4" fill="none" style="stroke: var(--accent)" stroke-width="2.2"></rect>
+        <text x="99" y="132" text-anchor="middle" font-size="13" font-weight="700" style="fill: var(--accent)">SQLite</text>
+        <text x="99" y="150" text-anchor="middle" font-size="11" style="fill: var(--accent)" opacity="0.85">۱۱ جدول</text>
+
+        <!-- Browser -> FastAPI -->
+        <line x1="546" y1="65" x2="456" y2="65" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow)" marker-start="url(#arrow)"></line>
+        <text x="501" y="52" text-anchor="middle" font-size="10.5" fill="currentColor" opacity="0.75">HTTP + JWT</text>
+
+        <!-- FastAPI -> DB -->
+        <path d="M 320 96 L 300 96 L 300 138 L 180 138" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow)"></path>
+        <text x="250" y="126" text-anchor="middle" font-size="10.5" fill="currentColor" opacity="0.75">SQLAlchemy ORM</text>
+
+        <!-- Uploads -->
+        <rect x="546" y="180" width="150" height="60" rx="4" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3"></rect>
+        <text x="621" y="206" text-anchor="middle" font-size="12.5" font-weight="600" fill="currentColor">پوشه‌ی uploads</text>
+        <text x="621" y="223" text-anchor="middle" font-size="10.5" fill="currentColor" opacity="0.7">فایل‌های خام</text>
+
+        <path d="M 450 76 L 510 76 L 510 210 L 542 210" fill="none" stroke="currentColor" stroke-width="1.2" marker-end="url(#arrow)" marker-start="url(#arrow)"></path>
+        <text x="504" y="150" text-anchor="middle" font-size="10.5" fill="currentColor" opacity="0.75" transform="rotate(-90 504 150)">آپلود / دانلود</text>
+
+        <!-- Reminder job -->
+        <rect x="290" y="192" width="160" height="62" rx="4" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+        <text x="370" y="218" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">تسک یادآوری</text>
+        <text x="370" y="236" text-anchor="middle" font-size="11" fill="currentColor" opacity="0.7">پردازه‌ی پس‌زمینه</text>
+
+        <!-- self loop -->
+        <path d="M 420 192 C 420 168, 320 168, 320 192" fill="none" stroke="currentColor" stroke-width="1.2" marker-end="url(#arrow)"></path>
+        <text x="370" y="164" text-anchor="middle" font-size="10.5" fill="currentColor" opacity="0.75">هر ۱۵ دقیقه</text>
+
+        <!-- Reminder -> DB -->
+        <path d="M 290 216 L 220 216 L 220 156 L 180 156" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow)"></path>
+        <text x="220" y="200" text-anchor="middle" font-size="10.5" fill="currentColor" opacity="0.75">بررسی رویداد ← ثبت اعلان</text>
+      </svg>
+      <figcaption>
+        دو مسیر کاملاً مستقل به یک پایگاه‌داده‌ی مشترک می‌رسند: چرخه‌ی هم‌زمان درخواست/پاسخ مرورگر، و
+        تسک ناهم‌زمانی که مستقل از هر درخواست کاربر، هر ۱۵ دقیقه برای یادآوری‌های ۲۴ ساعت مانده اجرا می‌شود.
+        همین استقلال دلیل اصلی طراحی جداگانه‌ی <code>check_and_send_reminders(db)</code> با پذیرفتن سشن
+        به‌عنوان پارامتر بود (بخش ۰۴).
+      </figcaption>
+    </figure>
+
+    <div class="stackgrid">
+      <div class="stackcol">
+        <h4>بک‌اند</h4>
+        <div class="tagrow">
+          <span class="tag">Python 3.11</span>
+          <span class="tag">FastAPI</span>
+          <span class="tag">SQLAlchemy 2.0</span>
+          <span class="tag">Alembic</span>
+          <span class="tag">SQLite</span>
+          <span class="tag">python-jose</span>
+          <span class="tag">passlib+bcrypt</span>
+          <span class="tag">reportlab</span>
+          <span class="tag">jdatetime</span>
+          <span class="tag">pytest</span>
+        </div>
+      </div>
+      <div class="stackcol">
+        <h4>فرانت‌اند</h4>
+        <div class="tagrow">
+          <span class="tag">React 18</span>
+          <span class="tag">Vite</span>
+          <span class="tag">react-router-dom</span>
+          <span class="tag">axios</span>
+          <span class="tag">react-multi-date-picker</span>
+          <span class="tag">CSS Custom Properties</span>
+        </div>
+      </div>
+      <div class="stackcol">
+        <h4>زیرساخت توسعه</h4>
+        <div class="tagrow">
+          <span class="tag">Alembic migrations</span>
+          <span class="tag">seed.py</span>
+          <span class="tag">VS Code tasks</span>
+          <span class="tag">pytest -q</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 roles -->
+  <section class="doc-section" id="roles">
+    <div class="section-head"><span class="num">۰۳</span><h2>نقش‌ها و قابلیت‌های اصلی</h2></div>
+    <p class="lede">هر سه نقش از یک کدبیس واحد سرویس می‌گیرند، اما هرکدام سطح دسترسی و صفحات مخصوص خودشان را دارند.</p>
+    <div class="rolegrid">
+      <div class="rolecard">
+        <h3>استاد راهنما</h3>
+        <ul>
+          <li>تعریف موضوع پروژه و فایل توضیحات</li>
+          <li>تأیید/رد درخواست انتخاب پروژه</li>
+          <li>تعیین جلسه و تصمیم روی پیشنهاد جلسه‌ی دانشجو</li>
+          <li>نمره‌دهی مرحله‌ای و مشاهده‌ی نمره‌ی نهایی</li>
+          <li>ثبت تاریخ و نتیجه‌ی رسمی دفاع</li>
+          <li>موعد هفتگی گزارش، داشبورد آماری و نموداری</li>
+          <li>خروجی PDF و ZIP پرونده‌ی پروژه</li>
+        </ul>
+      </div>
+      <div class="rolecard">
+        <h3>دانشجو</h3>
+        <ul>
+          <li>مرور و جست‌وجوی پروژه‌های باز، درخواست انتخاب</li>
+          <li>ثبت گزارش هفتگی با پیوست فایل</li>
+          <li>پیشنهاد زمان جلسه و پیگیری وضعیت آن</li>
+          <li>مشاهده‌ی جلسات، نمرات، و نتیجه‌ی دفاع</li>
+          <li>پیام‌رسانی با استاد و دانلود فایل‌های پروژه</li>
+          <li>تب رویدادهای پیش‌رو و اعلان‌های یادآوری</li>
+        </ul>
+      </div>
+      <div class="rolecard">
+        <h3>مدیر گروه</h3>
+        <ul>
+          <li>داشبورد آماری سراسری روی همه‌ی پروژه‌ها</li>
+          <li>مشاهده‌ی هر پروژه صرف‌نظر از مالکیت</li>
+          <li>فهرست و فیلتر کاربران بر اساس نقش</li>
+          <li>ساخت حساب فقط از طریق اسکریپت اختصاصی، نه ثبت‌نام عمومی</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 challenges -->
+  <section class="doc-section" id="challenges">
+    <div class="section-head"><span class="num">۰۴</span><h2>چالش‌های فنی و راه‌حل‌ها</h2></div>
+    <p class="lede">
+      نُه مورد از چالش‌های واقعی‌ای که در مسیر توسعه پیش آمد — هرکدام با همان راه‌حلی که نهایتاً در کد پیاده شد.
+    </p>
+
+    <div class="chall">
+      <div class="chall-head"><h3>محدودیت Alembic در تشخیص تغییر Enum</h3><span class="chall-tag">alembic/env.py</span></div>
+      <div class="chall-body">
+        <div class="cs-row problem"><div class="cs-mark">چالش</div><div class="cs-text">وقتی نقش مدیر گروه به Enum نقش‌ها اضافه شد، دستور autogenerate یک migration خالی تولید کرد؛ چون Alembic تغییر <em>مقادیر مجاز</em> یک Enum را تشخیص نمی‌دهد، فقط اضافه/حذف ستون و جدول را.</div></div>
+        <div class="cs-row fix"><div class="cs-mark">راه‌حل</div><div class="cs-text">migration به‌صورت دستی با <code>op.batch_alter_table</code> نوشته شد — چون SQLite برای تغییر یک CHECK constraint باید کل جدول را بازسازی کند — و <code>render_as_batch=True</code> به هر دو مسیر <code>env.py</code> اضافه شد تا این رفتار همیشه فعال باشد.</div></div>
+      </div>
+    </div>
+
+    <div class="chall">
+      <div class="chall-head"><h3>رندر درست متن فارسی در PDF</h3><span class="chall-tag">app/pdf_export.py</span></div>
+      <div class="chall-body">
+        <div class="cs-row problem"><div class="cs-mark">چالش</div><div class="cs-text">reportlab نه فونت فارسی داخلی دارد و نه شکل‌دهی حروف (Arabic shaping) یا راست‌به‌چپ‌سازی؛ خروجی اول حروف را جدا و در جهت اشتباه نشان می‌داد.</div></div>
+        <div class="cs-row fix"><div class="cs-mark">راه‌حل</div><div class="cs-text">هر رشته پیش از قرارگیری در PDF از <code>arabic_reshaper</code> و سپس <code>python-bidi</code> عبور می‌کند؛ برای فونت هم چون reportlab فونت فارسی ندارد، فونت Tahoma نصب‌شده روی ویندوز مستقیم رجیستر شد.</div></div>
+      </div>
+    </div>
+
+    <div class="chall">
+      <div class="chall-head"><h3>نبود تقویم شمسی بومی در مرورگر</h3><span class="chall-tag">PersianDateInput.jsx · jdatetime</span></div>
+      <div class="chall-body">
+        <div class="cs-row problem"><div class="cs-mark">چالش</div><div class="cs-text"><code>&lt;input type="date"&gt;</code> در همه‌ی مرورگرها با تقویم میلادی نمایش داده می‌شود، مستقل از زبان صفحه؛ راهی برای عوض‌کردنش با HTML/CSS ساده وجود ندارد.</div></div>
+        <div class="cs-row fix"><div class="cs-mark">راه‌حل</div><div class="cs-text">در فرانت یک کامپوننت مشترک با <code>react-multi-date-picker</code> جای همه‌ی ورودی‌های تاریخ نشست، و نمایش‌ها هم از یک تابع مرکزی (<code>utils/date.js</code>) عبور می‌کنند؛ در بک‌اند هم خروجی PDF با <code>jdatetime</code> به شمسی تبدیل می‌شود — تاریخ‌ها همچنان در دیتابیس میلادی ذخیره می‌مانند.</div></div>
+      </div>
+    </div>
+
+    <div class="chall">
+      <div class="chall-head"><h3>جلوگیری از ثبت‌نام دانشجو به‌جای استاد</h3><span class="chall-tag">app/routers/auth.py</span></div>
+      <div class="chall-body">
+        <div class="cs-row problem"><div class="cs-mark">چالش</div><div class="cs-text">فرم ثبت‌نام عمومی هیچ راهی برای تشخیص «استاد واقعی» از «دانشجویی که نقش استاد را انتخاب کرده» نداشت؛ تایید ایمیل برای این مرحله از توسعه بیش از حد پیچیده بود.</div></div>
+        <div class="cs-row fix"><div class="cs-mark">راه‌حل</div><div class="cs-text">ثبت‌نام با نقش استاد به وارد کردن یک <strong>کد دعوت</strong> (<code>PROFESSOR_INVITE_CODE</code>) مشروط شد؛ ساخت حساب مدیر گروه هم اصلاً از مسیر عمومی حذف و به یک اسکریپت خط‌فرمان اختصاصی منتقل شد.</div></div>
+      </div>
+    </div>
+
+    <div class="chall">
+      <div class="chall-head"><h3>جداسازی تسک پس‌زمینه از محیط تست</h3><span class="chall-tag">app/main.py · app/reminders.py</span></div>
+      <div class="chall-body">
+        <div class="cs-row problem"><div class="cs-mark">چالش</div><div class="cs-text">تسک یادآوری باید هر ۱۵ دقیقه اجرا شود، اما اگر همراه هر تست هم راه بیفتد، تست‌ها به پایگاه‌داده‌ی واقعی برنامه دست می‌زنند و پردازه‌های بی‌پایان روی هم انباشته می‌شوند.</div></div>
+        <div class="cs-row fix"><div class="cs-mark">راه‌حل</div><div class="cs-text">تسک با <code>lifespan</code> رسمی FastAPI ثبت شد که فقط با اجرای واقعی <code>uvicorn</code> فعال می‌شود؛ <code>TestClient</code>ی ساده (بدون <code>with</code>) هرگز آن را صدا نمی‌زند. منطق اصلی هم در تابعی جدا با پذیرفتن <code>db</code> به‌عنوان پارامتر نوشته شد تا تست‌ها بتوانند مستقیم و مستقل صدایش بزنند.</div></div>
+      </div>
+    </div>
+
+    <div class="chall">
+      <div class="chall-head"><h3>باگ واقعی: مسیر آپلود اشتباه در خروجی ZIP</h3><span class="chall-tag">app/zip_export.py</span></div>
+      <div class="chall-body">
+        <div class="cs-row problem"><div class="cs-mark">چالش</div><div class="cs-text">در حین نوشتن تست، ماژول ZIP فایل‌های آپلودی را پیدا نمی‌کرد؛ علتش این بود که مستقیم از <code>config.UPLOAD_DIR</code> وارد شده بود، در حالی‌که تست‌ها مسیر آپلود واقعی را در ماژول <code>file_storage</code> جابه‌جا می‌کنند.</div></div>
+        <div class="cs-row fix"><div class="cs-mark">راه‌حل</div><div class="cs-text">import مستقیم با ارجاع پویا به <code>file_storage.UPLOAD_DIR</code> جایگزین شد — تنها راهی که به تغییر مسیر در زمان اجرا (چه در تست، چه در واقعیت) احترام می‌گذارد.</div></div>
+      </div>
+    </div>
+
+    <div class="chall">
+      <div class="chall-head"><h3>ناسازگاری نسخه‌ی bcrypt با passlib</h3><span class="chall-tag">requirements.txt</span></div>
+      <div class="chall-body">
+        <div class="cs-row problem"><div class="cs-mark">چالش</div><div class="cs-text">نسخه‌های تازه‌ی <code>bcrypt</code> رابط داخلی‌ای را که <code>passlib 1.7.4</code> برای تشخیص نسخه به آن تکیه می‌کند تغییر داده‌اند و باعث خطا در هش کردن رمز عبور می‌شوند.</div></div>
+        <div class="cs-row fix"><div class="cs-mark">راه‌حل</div><div class="cs-text">نسخه‌ی <code>bcrypt</code> در <code>requirements.txt</code> روی <code>4.0.1</code> پین شد.</div></div>
+      </div>
+    </div>
+
+    <div class="chall">
+      <div class="chall-head"><h3>اجرای npm در PowerShell</h3><span class="chall-tag">.vscode/tasks.json</span></div>
+      <div class="chall-body">
+        <div class="cs-row problem"><div class="cs-mark">چالش</div><div class="cs-text">در PowerShell دستور <code>npm</code> ابتدا به <code>npm.ps1</code> برمی‌خورد که با سیاست اجرای پیش‌فرض <code>Restricted</code> مسدود می‌شود.</div></div>
+        <div class="cs-row fix"><div class="cs-mark">راه‌حل</div><div class="cs-text">در دستورالعمل‌ها و در تسک VS Code، مستقیم <code>npm.cmd</code> صدا زده می‌شود تا این مسیر رزولوشن دور زده شود.</div></div>
+      </div>
+    </div>
+
+    <div class="chall">
+      <div class="chall-head"><h3>قفل‌شدن پوشه‌ی کش pytest در ویندوز</h3><span class="chall-tag">pytest.ini</span></div>
+      <div class="chall-body">
+        <div class="cs-row problem"><div class="cs-mark">چالش</div><div class="cs-text">در برخی اجراها پوشه‌ی <code>.pytest_cache</code> با <code>WinError 5: Access denied</code> قفل می‌ماند و اجرای بعدی تست را کند یا ناموفق می‌کرد.</div></div>
+        <div class="cs-row fix"><div class="cs-mark">راه‌حل</div><div class="cs-text">با افزودن <code>-p no:cacheprovider</code> به <code>addopts</code>، این افزونه به‌طور کامل غیرفعال شد.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 features -->
+  <section class="doc-section" id="features">
+    <div class="section-head"><span class="num">۰۵</span><h2>توسعه‌های تکمیلی</h2></div>
+    <p class="lede">
+      فراتر از سناریوی پایه، این قابلیت‌ها به‌مرور و بر اساس نیازهای واقعی به سامانه اضافه شدند.
+    </p>
+
+    <div class="featuregroup">
+      <h3><span class="fnum">۵.۱</span> امنیت ثبت‌نام</h3>
+      <ul>
+        <li>کپچای تصویری سمت سرور، یک‌بارمصرف با انقضای ۵ دقیقه‌ای</li>
+        <li>شماره موبایل اجباری و یکتا برای همه‌ی کاربران</li>
+        <li>جلوگیری از ثبت‌نام با ایمیل یا موبایل تکراری</li>
+        <li>کد دعوت برای ثبت‌نام نقش استاد</li>
+      </ul>
+    </div>
+
+    <div class="featuregroup">
+      <h3><span class="fnum">۵.۲</span> زیرساخت و کیفیت کد</h3>
+      <ul>
+        <li>مدیریت نسخه‌ی دیتابیس با Alembic (۶ migration)</li>
+        <li>اسکریپت seed برای داده‌های نمونه‌ی قابل بازتولید</li>
+        <li>۱۴۲ تست خودکار با pytest، جدا از دیتابیس واقعی</li>
+        <li>یکپارچه‌سازی منطق تکراری آپلود/دسترسی در <code>file_storage.py</code> و <code>access.py</code></li>
+      </ul>
+    </div>
+
+    <div class="featuregroup">
+      <h3><span class="fnum">۵.۳</span> تجربه‌ی کاربری</h3>
+      <ul>
+        <li>ریسپانسیو کامل موبایل با منوی همبرگری</li>
+        <li>پیش‌نمایش فایل‌های PDF و تصویر به‌جای دانلود اجباری</li>
+        <li>حالت روشن/تاریک با به‌خاطرسپاری انتخاب کاربر</li>
+        <li>ویرایش پروفایل و تغییر رمز عبور</li>
+        <li>جست‌وجو در عنوان و چکیده‌ی پروژه‌ها</li>
+      </ul>
+    </div>
+
+    <div class="featuregroup">
+      <h3><span class="fnum">۵.۴</span> مدیریت پروژه و زمان‌بندی</h3>
+      <ul>
+        <li>تاریخ دفاع + نتیجه‌ی رسمی دفاع (قبول / نیاز به اصلاح / رد)</li>
+        <li>تجمیع و میانگین‌گیری خودکار نمرات مرحله‌ای</li>
+        <li>پیشنهاد زمان جلسه از سمت دانشجو با تایید/رد استاد</li>
+        <li>تقویم شمسی سراسری در تمام سامانه</li>
+        <li>تب «رویدادهای پیش‌رو» + یادآوری خودکار ۲۴ ساعته</li>
+      </ul>
+    </div>
+
+    <div class="featuregroup">
+      <h3><span class="fnum">۵.۵</span> خروجی و گزارش‌گیری</h3>
+      <ul>
+        <li>خروجی PDF پرونده‌ی کامل پروژه</li>
+        <li>خروجی ZIP آرشیو (PDF + همه‌ی فایل‌های آپلودی)</li>
+        <li>نمودار پیشرفت هر پروژه و روند نمره‌ی نهایی در داشبورد استاد</li>
+      </ul>
+    </div>
+
+    <div class="featuregroup">
+      <h3><span class="fnum">۵.۶</span> نقش مدیر گروه</h3>
+      <ul>
+        <li>داشبورد آماری سراسری، مستقل از مالکیت پروژه</li>
+        <li>فهرست و فیلتر همه‌ی کاربران بر اساس نقش</li>
+        <li>تغییر کد دعوت ثبت‌نام استاد از صفحه‌ی تنظیمات، بدون نیاز به تغییر متغیر محیطی یا ری‌استارت سرور</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 06 future -->
+  <section class="doc-section" id="future">
+    <div class="section-head"><span class="num">۰۶</span><h2>فرصت‌های توسعه‌ی آینده</h2></div>
+    <p class="lede">مواردی که هنوز پیاده‌سازی نشده‌اند اما به‌عنوان قدم بعدی منطقی شناسایی شده‌اند.</p>
+    <div class="oppgrid">
+      <div class="opp"><h4>پروژه‌های گروهی</h4><p>پشتیبانی از چند دانشجو روی یک پروژه، به‌جای رابطه‌ی یک‌به‌یک فعلی.</p></div>
+      <div class="opp"><h4>خروجی اکسل نمرات</h4><p>یک فایل واحد از نمرات همه‌ی پروژه‌های یک استاد، برای ثبت در سیستم دانشگاه.</p></div>
+      <div class="opp"><h4>قفل موقت ورود ناموفق</h4><p>محدودسازی تعداد تلاش ورود ناموفق، به همان سبک سبک و درون‌حافظه‌ای کپچا.</p></div>
+      <div class="opp"><h4>جدول‌زمانی یکپارچه</h4><p>یک فید واحد از گزارش‌ها، جلسات، نمرات و فایل‌ها به‌ترتیب زمانی، به‌جای پخش‌شدن در تب‌های جدا.</p></div>
+      <div class="opp"><h4>نسخه‌بندی فایل</h4><p>نگه‌داشتن نسخه‌های قبلی هنگام جایگزینی یک فایل آپلودی، به‌جای بازنویسی کامل.</p></div>
+      <div class="opp"><h4>هشدار عنوان تکراری</h4><p>اطلاع به استاد هنگام تعریف پروژه‌ای با عنوان مشابه یک پروژه‌ی موجود.</p></div>
+      <div class="opp wide">
+        <h4>آماده‌سازی برای استقرار آنلاین</h4>
+        <p>مهاجرت از SQLite به PostgreSQL، اجرا پشت HTTPS، افزودن تایید ایمیل به‌جای کد دعوت ساده، خواندن مقادیر حساس (<code>SECRET_KEY</code>, کد دعوت) از متغیرهای محیطی امن، و محدودسازی نرخ درخواست در سطح سراسری — همگی آگاهانه برای فاز توسعه‌ی محلی به تعویق افتاده‌اند.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 stats -->
+  <section class="doc-section" id="stats">
+    <div class="section-head"><span class="num">۰۷</span><h2>جمع‌بندی آماری</h2></div>
+    <p class="lede">وضعیت فعلی کدبیس، برای مرور سریع.</p>
+    <div class="statrow">
+      <div class="stat"><span class="n">۱۴۲</span><span class="l">تست خودکار</span></div>
+      <div class="stat"><span class="n">۱۲</span><span class="l">جدول دیتابیس</span></div>
+      <div class="stat"><span class="n">۶</span><span class="l">نسخه‌ی مهاجرت</span></div>
+      <div class="stat"><span class="n">۱۳</span><span class="l">گروه مسیر API</span></div>
+      <div class="stat"><span class="n">۱۱</span><span class="l">صفحه‌ی فرانت‌اند</span></div>
+      <div class="stat"><span class="n">۳</span><span class="l">نقش کاربری</span></div>
+    </div>
+  </section>
+
+  <div class="closing">
+    <span>سامانه مدیریت پروژه‌های دانشجویی</span>
+    <span>تهیه‌شده برای ارائه به استاد راهنما</span>
+  </div>
+
+</div>
+</body>
+</html>
